@@ -1,14 +1,13 @@
 .App {
-  text-align: center;
-  background-image: url("../src/assets/weather.jpg");
-  width: 100vw;
-  height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
+  @apply text-center bg-[url("../src/assets/weather.jpg")] w-screen h-screen bg-cover bg-no-repeat;
 }
 
-.App-input {
+/* .App-input {
+  @apply border border-gray-200 border-solid rounded-2xl p-20;
+} */
+
+/* @utility app-input {
   border-radius: 20px;
   padding: 10px;
   border: #282c34 1px solid;
-}
+} */

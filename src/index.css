@@ -1,4 +1,4 @@
-/* @import "tailwindcss"; */
+@import "tailwindcss";
 
 body {
   margin: 0;
@@ -12,4 +12,55 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+@utility app-form {
+  padding-top: 4rem;
+  margin: 0 auto;
+  width: fit-content;
+  display: flex;
+  gap: 2rem;
+}
+
+@utility app-input {
+  border-radius: 2rem;
+  padding: 10px 20px;
+  border: #fff 1px solid;
+  outline: none;
+  background-color: transparent;
+  &::placeholder {
+    animation: 4s scrollText infinite;
+    color: #fff;
+  }
+  &:focus {
+    background-color: #ffff;
+  }
+}
+
+@keyframes scrollText {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility app-button {
+  border-radius: 20px;
+  padding: 10px 20px;
+  border: none;
+  color: #fff;
+  outline: none;
+  /* background: rgb(238, 174, 202); */
+  background: linear-gradient(
+    259deg,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(20, 98, 189, 1) 100%
+  );
+  cursor: pointer;
+  font-weight: bold;
+  &:active {
+    transform: translateY(2%);
+  }
 }
