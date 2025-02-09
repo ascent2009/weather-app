@@ -12,7 +12,6 @@ interface IData {
   dew: number;
   feelslike: number;
   humidity?: number | undefined;
-  icon: string;
   pressure?: number | undefined;
   snow?: number | undefined;
   snowdepth?: number | undefined;
@@ -23,6 +22,7 @@ interface IData {
   temp: number;
   visibility?: number | undefined;
   description: string;
+  days: [];
 }
 
 function App() {
@@ -34,7 +34,6 @@ function App() {
     dew: 0,
     feelslike: 0,
     humidity: 0,
-    icon: "",
     pressure: 0,
     snow: 0,
     snowdepth: 0,
@@ -45,6 +44,7 @@ function App() {
     temp: 0,
     visibility: 0,
     description: "",
+    days: [],
   });
 
   const [inputValue, setInputValue] = useState("");
@@ -98,7 +98,6 @@ function App() {
           description: data.data.description,
           sunrise: data.data.currentConditions.sunrise,
           sunset: data.data.currentConditions.sunset,
-          icon: data.data.currentConditions.icon,
           visibility: data.data.currentConditions.visibility,
           cloudcover: data.data.currentConditions.cloudcover,
           conditions: data.data.currentConditions.conditions,
@@ -111,6 +110,7 @@ function App() {
           snowdepth: data.data.currentConditions.snowdepth,
           solarenergy: data.data.currentConditions.solarenergy,
           solarradiation: data.data.currentConditions.solarradiation,
+          days: data.data.days.slice(1, 5),
         });
       }
     } catch (err) {
@@ -133,7 +133,6 @@ function App() {
     dew,
     feelslike,
     humidity,
-    icon,
     pressure,
     snow,
     snowdepth,
@@ -144,6 +143,7 @@ function App() {
     temp,
     visibility,
     description,
+    days,
   } = data;
 
   return (
@@ -160,11 +160,12 @@ function App() {
           Search location
         </button>
       </form>
-      <div className="my-16 m-auto text-white w-[70%]">
+      <div className="my-16 m-auto text-white w-[80%]">
         <div className="my-8 text-2xl font-bold">{location}</div>
         <div className="text-1xl font-bold">
           <p>{description}</p>
         </div>
+
         <div className="grid grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
           <div>
             <h2 className="text-blue-400">Temperature</h2>
@@ -174,7 +175,7 @@ function App() {
             <h2 className="text-blue-400">Feels like</h2>
             <p>{convertTemp(feelslike)}&deg;C</p>
           </div>
-          <div className="md:text-black/70">{icon}</div>
+          {/* <div className="md:text-black/70">{icon}</div> */}
           <div>
             <h2 className="text-blue-400">Visibility</h2>
             <p>{visibility} km</p>
@@ -184,7 +185,7 @@ function App() {
               <h2 className="text-blue-400">Sunrise</h2>
               <p>{sunrise}</p>
             </div>
-            <div className="md:text-black/70">
+            <div>
               <h2 className="text-blue-400">Sunset</h2>
               {sunset}
             </div>
@@ -197,7 +198,11 @@ function App() {
             <h2 className="text-blue-400">Conditions</h2>
             <p>{conditions}</p>
           </div>
-          <div>{datetime}</div>
+
+          <div>
+            <h2 className="text-blue-400">Time</h2>
+            <p>{datetime}</p>
+          </div>
           <div>
             <h2 className="text-blue-400">Dew</h2>
             <p>{convertTemp(dew)}&deg;C</p>
@@ -231,6 +236,50 @@ function App() {
             <h2 className="text-blue-400">Solar radiation</h2>
             <p>{solarradiation}</p>
           </div>
+        </div>
+        <div className="text-2xl font-bold my-12">
+          <p>This location weather forecast for 4 days</p>
+        </div>
+        <div className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
+          {days.map(
+            ({
+              datetime,
+              description,
+              feelslike,
+              temp,
+              humidity,
+              pressure,
+            }) => {
+              return (
+                <div className="flex-col h-64 justify-between" key={datetime}>
+                  <div className="flex gap-4 py-2 px-2 rounded-2xl bg-blue-400 justify-center">
+                    <h3>{new Date(datetime).toLocaleDateString()}</h3>
+                  </div>
+
+                  <h3>{description}</h3>
+                  <div className="flex gap-4 ">
+                    <h2 className="text-blue-400">Temperature</h2>
+                    <h3>{convertTemp(temp)}&deg;C</h3>
+                  </div>
+
+                  <div className="flex gap-4 ">
+                    <h2 className="text-blue-400">Feels like</h2>
+                    <h3>{convertTemp(feelslike)}&deg;C</h3>
+                  </div>
+                  <div className="flex gap-4 ">
+                    <h2 className="text-blue-400">Humidity</h2>
+                    <h3>{humidity}%</h3>
+                  </div>
+                  <div className="flex gap-4 ">
+                    <h2 className="text-blue-400">Pressure</h2>
+                    <h3>
+                      {pressure} kg/cm<sup>2</sup>
+                    </h3>
+                  </div>
+                </div>
+              );
+            },
+          )}
         </div>
       </div>
     </section>

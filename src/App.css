@@ -1,5 +1,5 @@
 .App {
-  @apply text-center bg-[url("../src/assets/weather.jpg")] w-screen h-screen bg-cover bg-no-repeat;
+  @apply text-center bg-[url("../src/assets/weather.jpg")] w-screen h-dvw bg-cover bg-no-repeat;
 }
 
 /* .App-input {
