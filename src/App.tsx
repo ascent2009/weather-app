@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import logo from "./logo.svg";
 import axios from "axios";
 import "./App.css";
 import { convertTemp } from "./helpers/utils";
+import DropdownSvg from "./assets/chevron-down.svg";
 
 interface IData {
+  address: string;
   location: string;
   cloudcover?: number | undefined;
   conditions?: string | undefined;
@@ -26,11 +28,13 @@ interface IData {
 }
 
 function App() {
+  const [locationData, setLocationData] = useState({ country: "", city: "" });
   const [data, setData] = useState<IData>({
     location: "",
     cloudcover: 0,
     conditions: "",
     datetime: "",
+    address: "",
     dew: 0,
     feelslike: 0,
     humidity: 0,
@@ -47,6 +51,8 @@ function App() {
     days: [],
   });
 
+  const [dropdown, setDropdown] = useState(false);
+
   const [inputValue, setInputValue] = useState("");
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,6 +61,14 @@ function App() {
 
   const onClear = () => {
     setInputValue("");
+  };
+
+  const getLocation = async () => {
+    // it will return the following attributes:
+    // country, countryCode, regionName, city, lat, lon, zip and timezone
+    const res = await axios.get("http://ip-api.com/json");
+    const data = await res.data;
+    setLocationData({ ...data, country: data.country, city: data.city });
   };
 
   const fetchCities = async () => {
@@ -82,7 +96,8 @@ function App() {
 
     try {
       const response = await axios.get(
-        `${URL}${inputValue}?unitGroup=us&key=${API_key}&contentType=json`,
+        `${URL}${inputValue ? inputValue : locationData.city}?unitGroup=us&key=${API_key}&contentType=json`,
+
         {
           method: "GET",
           headers: {},
@@ -93,6 +108,7 @@ function App() {
       if (data.data.address.includes(inputValue)) {
         setData({
           ...data,
+          address: data.data.address,
           location: data.data.resolvedAddress,
           temp: data.data.currentConditions.temp,
           description: data.data.description,
@@ -118,6 +134,10 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    getLocation();
+  }, []);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     fetchCities();
@@ -125,7 +145,16 @@ function App() {
     console.log(data);
   };
 
+  const handleDropdownToggle = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    const id = e.currentTarget.id;
+    console.log(typeof id);
+    setDropdown(!dropdown);
+  };
+
   const {
+    address,
     location,
     cloudcover,
     conditions,
@@ -148,6 +177,10 @@ function App() {
 
   return (
     <section className="App">
+      {/* <p className="text-2xl text-white">
+        {locationData.country}
+        {locationData.city}
+      </p> */}
       <form onSubmit={handleSubmit} className="app-form">
         <input
           className="app-input"
@@ -160,128 +193,149 @@ function App() {
           Search location
         </button>
       </form>
-      <div className="my-16 m-auto text-white w-[80%]">
-        <div className="my-8 text-2xl font-bold">{location}</div>
-        <div className="text-1xl font-bold">
-          <p>{description}</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
-          <div>
-            <h2 className="text-blue-400">Temperature</h2>
-            <p>{convertTemp(temp)}&deg;C</p>
-          </div>
-          <div>
-            <h2 className="text-blue-400">Feels like</h2>
-            <p>{convertTemp(feelslike)}&deg;C</p>
-          </div>
-          {/* <div className="md:text-black/70">{icon}</div> */}
-          <div>
-            <h2 className="text-blue-400">Visibility</h2>
-            <p>{visibility} km</p>
-          </div>
-          <div>
-            <div>
-              <h2 className="text-blue-400">Sunrise</h2>
-              <p>{sunrise}</p>
-            </div>
-            <div>
-              <h2 className="text-blue-400">Sunset</h2>
-              {sunset}
-            </div>
-          </div>
-          <div>
-            <h2 className="text-blue-400">Cloud cover</h2>
-            <p>{cloudcover}%</p>
-          </div>
-          <div>
-            <h2 className="text-blue-400">Conditions</h2>
-            <p>{conditions}</p>
-          </div>
-
-          <div>
-            <h2 className="text-blue-400">Time</h2>
+      !data &&{" "}
+      <>
+        <div className="my-16 m-auto text-white w-[80%]">
+          <div className="my-8 text-2xl font-bold flex gap-10 justify-center">
+            <p>{location}</p>
             <p>{datetime}</p>
           </div>
-          <div>
-            <h2 className="text-blue-400">Dew</h2>
-            <p>{convertTemp(dew)}&deg;C</p>
+          <div className="text-1xl font-bold">
+            <p>{description}</p>
           </div>
 
-          <div>
-            <h2 className="text-blue-400">Humidity</h2>
-            <p>{humidity}%</p>
-          </div>
+          <div className="grid grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
+            <div>
+              <h2 className="text-blue-400">Temperature</h2>
+              <p>{convertTemp(temp)}&deg;C</p>
+            </div>
+            <div>
+              <h2 className="text-blue-400">Feels like</h2>
+              <p>{convertTemp(feelslike)}&deg;C</p>
+            </div>
+            {/* <div className="md:text-black/70">{icon}</div> */}
+            <div>
+              <h2 className="text-blue-400">Visibility</h2>
+              <p>{visibility} km</p>
+            </div>
+            <div>
+              <div>
+                <h2 className="text-blue-400">Sunrise</h2>
+                <p>{sunrise}</p>
+              </div>
+              <div>
+                <h2 className="text-blue-400">Sunset</h2>
+                {sunset}
+              </div>
+            </div>
+            <div>
+              <h2 className="text-blue-400">Cloud cover</h2>
+              <p>{cloudcover}%</p>
+            </div>
+            <div>
+              <h2 className="text-blue-400">Conditions</h2>
+              <p>{conditions}</p>
+            </div>
+            <div>
+              <h2 className="text-blue-400">Dew</h2>
+              <p>{convertTemp(dew)}&deg;C</p>
+            </div>
 
-          <div>
-            <h2 className="text-blue-400">Pressure</h2>
+            <div>
+              <h2 className="text-blue-400">Humidity</h2>
+              <p>{humidity}%</p>
+            </div>
+
+            <div>
+              <h2 className="text-blue-400">Pressure</h2>
+              <p>
+                {pressure} kg/cm<sup>2</sup>
+              </p>
+            </div>
+
+            <div>
+              <div>
+                <h2 className="text-blue-400">Snow</h2>
+                <p>{snow}</p>
+              </div>
+              <div>
+                <h2 className="text-blue-400">Snow depth</h2>
+                <p>{snowdepth} cm</p>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-blue-400">Solar energy</h2>
+              <p>{solarenergy}</p>
+            </div>
+            <div>
+              <h2 className="text-blue-400">Solar radiation</h2>
+              <p>{solarradiation}</p>
+            </div>
+          </div>
+          <div className="text-2xl font-bold my-12">
             <p>
-              {pressure} kg/cm<sup>2</sup>
+              <span className="text-blue-400">
+                {address.substring(0, 1).toUpperCase() + address.substring(1)}
+              </span>{" "}
+              weather forecast for 4 days
             </p>
           </div>
-          <div>
-            <h2 className="text-blue-400">Snow</h2>
-            <p>{snow}</p>
-          </div>
-          <div>
-            <h2 className="text-blue-400">Snow depth</h2>
-            <p>{snowdepth} cm</p>
-          </div>
+          <div className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
+            {days.map(
+              (
+                { datetime, description, feelslike, temp, humidity, pressure },
+                index,
+              ) => {
+                // console.log(index);
+                return (
+                  <div key={datetime} className="flex flex-col h-64 gap-6">
+                    <button
+                      className="app-button flex gap-4 items-center justify-center"
+                      onClick={handleDropdownToggle}
+                      id={index + 1}
+                    >
+                      <h3>{new Date(datetime).toLocaleDateString()}</h3>
+                      <img
+                        src={DropdownSvg}
+                        alt="dropdown"
+                        className={dropdown ? "rotate-180" : ""}
+                      />
+                    </button>
 
-          <div>
-            <h2 className="text-blue-400">Solar energy</h2>
-            <p>{solarenergy}</p>
-          </div>
-          <div>
-            <h2 className="text-blue-400">Solar radiation</h2>
-            <p>{solarradiation}</p>
+                    <div
+                      className={
+                        dropdown ? "flex flex-col h-64 gap-6" : "hidden"
+                      }
+                    >
+                      <h3>{description}</h3>
+                      <div className="flex gap-4 ">
+                        <h2 className="text-blue-400">Temperature</h2>
+                        <h3>{convertTemp(temp)}&deg;C</h3>
+                      </div>
+
+                      <div className="flex gap-4 ">
+                        <h2 className="text-blue-400">Feels like</h2>
+                        <h3>{convertTemp(feelslike)}&deg;C</h3>
+                      </div>
+                      <div className="flex gap-4 ">
+                        <h2 className="text-blue-400">Humidity</h2>
+                        <h3>{humidity}%</h3>
+                      </div>
+                      <div className="flex gap-4 ">
+                        <h2 className="text-blue-400">Pressure</h2>
+                        <h3>
+                          {pressure} kg/cm<sup>2</sup>
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                );
+              },
+            )}
           </div>
         </div>
-        <div className="text-2xl font-bold my-12">
-          <p>This location weather forecast for 4 days</p>
-        </div>
-        <div className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
-          {days.map(
-            ({
-              datetime,
-              description,
-              feelslike,
-              temp,
-              humidity,
-              pressure,
-            }) => {
-              return (
-                <div className="flex-col h-64 justify-between" key={datetime}>
-                  <div className="flex gap-4 py-2 px-2 rounded-2xl bg-blue-400 justify-center">
-                    <h3>{new Date(datetime).toLocaleDateString()}</h3>
-                  </div>
-
-                  <h3>{description}</h3>
-                  <div className="flex gap-4 ">
-                    <h2 className="text-blue-400">Temperature</h2>
-                    <h3>{convertTemp(temp)}&deg;C</h3>
-                  </div>
-
-                  <div className="flex gap-4 ">
-                    <h2 className="text-blue-400">Feels like</h2>
-                    <h3>{convertTemp(feelslike)}&deg;C</h3>
-                  </div>
-                  <div className="flex gap-4 ">
-                    <h2 className="text-blue-400">Humidity</h2>
-                    <h3>{humidity}%</h3>
-                  </div>
-                  <div className="flex gap-4 ">
-                    <h2 className="text-blue-400">Pressure</h2>
-                    <h3>
-                      {pressure} kg/cm<sup>2</sup>
-                    </h3>
-                  </div>
-                </div>
-              );
-            },
-          )}
-        </div>
-      </div>
+      </>
     </section>
   );
 }
