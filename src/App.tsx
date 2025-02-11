@@ -52,8 +52,8 @@ function App() {
   });
 
   const [dropdown, setDropdown] = useState(false);
-
   const [inputValue, setInputValue] = useState("");
+  const [hidden, setHidden] = useState(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -66,9 +66,13 @@ function App() {
   const getLocation = async () => {
     // it will return the following attributes:
     // country, countryCode, regionName, city, lat, lon, zip and timezone
-    const res = await axios.get("http://ip-api.com/json");
-    const data = await res.data;
-    setLocationData({ ...data, country: data.country, city: data.city });
+    try {
+      const res = await axios.get("http://ip-api.com/json");
+      const data = await res.data;
+      setLocationData({ ...data, country: data.country, city: data.city });
+    } catch (error) {
+      console.error("error: ", (error as Error).message);
+    }
   };
 
   const fetchCities = async () => {
@@ -129,6 +133,7 @@ function App() {
           days: data.data.days.slice(1, 5),
         });
       }
+      setHidden(false);
     } catch (err) {
       console.error("error: ", (err as Error).message);
     }
@@ -149,7 +154,7 @@ function App() {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     const id = e.currentTarget.id;
-    console.log(typeof id);
+    console.log(id);
     setDropdown(!dropdown);
   };
 
@@ -181,21 +186,35 @@ function App() {
         {locationData.country}
         {locationData.city}
       </p> */}
-      <form onSubmit={handleSubmit} className="app-form">
+      <form
+        onSubmit={handleSubmit}
+        className={hidden ? "app-form justify-center" : "app-form"}
+      >
         <input
-          className="app-input"
+          className={hidden ? "hidden" : "app-input"}
           type="text"
           value={inputValue}
           onChange={handleChange}
           placeholder="Enter country or city in original language"
         />
-        <button type="submit" className="app-button">
-          Search location
+        <button
+          type="submit"
+          className={
+            hidden ? "app-button text-3xl p-6 rounded-full" : "app-button"
+          }
+        >
+          {hidden ? "Get the current location" : "Search location"}
         </button>
       </form>
-      !data &&{" "}
-      <>
-        <div className="my-16 m-auto text-white w-[80%]">
+      {hidden && (
+        <img
+          src="../src/assets/earth-terre.gif"
+          alt="rotating globe"
+          className="inline mt-30 -translate-x-[10%]"
+        />
+      )}
+      <div className={hidden ? "hidden" : "block"}>
+        <div className="my-16 m-auto text-white w-[70%]">
           <div className="my-8 text-2xl font-bold flex gap-10 justify-center">
             <p>{location}</p>
             <p>{datetime}</p>
@@ -293,7 +312,7 @@ function App() {
                     <button
                       className="app-button flex gap-4 items-center justify-center"
                       onClick={handleDropdownToggle}
-                      id={index + 1}
+                      id={(index + 1).toString()}
                     >
                       <h3>{new Date(datetime).toLocaleDateString()}</h3>
                       <img
@@ -305,10 +324,10 @@ function App() {
 
                     <div
                       className={
-                        dropdown ? "flex flex-col h-64 gap-6" : "hidden"
+                        dropdown ? "flex flex-col h-72 gap-6" : "hidden"
                       }
                     >
-                      <h3>{description}</h3>
+                      <h3 className="text-left h-16">{description}</h3>
                       <div className="flex gap-4 ">
                         <h2 className="text-blue-400">Temperature</h2>
                         <h3>{convertTemp(temp)}&deg;C</h3>
@@ -335,7 +354,7 @@ function App() {
             )}
           </div>
         </div>
-      </>
+      </div>
     </section>
   );
 }
