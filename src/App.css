@@ -2,6 +2,13 @@
   @apply text-center bg-[url("../src/assets/weather.jpg")] w-screen h-dvw bg-cover bg-no-repeat;
 }
 
+.App-mobile {
+  @media (width <= 48rem) {
+    background-color: green;
+    background-image: "none";
+  }
+}
+
 /* .App-input {
   @apply border border-gray-200 border-solid rounded-2xl p-20;
 } */

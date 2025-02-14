@@ -4,6 +4,8 @@ import axios from "axios";
 import "./App.css";
 import { convertTemp } from "./helpers/utils";
 import DropdownSvg from "./assets/chevron-down.svg";
+import GlobeGif from "./assets/earth-terre.gif";
+// const GlobeGif = require("./assets/earth-terre.gif");
 
 interface IData {
   address: string;
@@ -67,7 +69,10 @@ function App() {
     // it will return the following attributes:
     // country, countryCode, regionName, city, lat, lon, zip and timezone
     try {
-      const res = await axios.get("http://ip-api.com/json");
+      const res = await axios.get("https://geolocation-db.com/json/");
+      // const res = await axios.get("http://ip-api.com/json", {
+      //   mode: "cors",
+      // });
       const data = await res.data;
       setLocationData({ ...data, country: data.country, city: data.city });
     } catch (error) {
@@ -181,7 +186,7 @@ function App() {
   } = data;
 
   return (
-    <section className="App">
+    <section className="md:text-center bg-[url('./assets/weather.jpg')] w-screen md:w-screen h-screen md:h-dvw bg-cover md:bg-no-repeat">
       {/* <p className="text-2xl text-white">
         {locationData.country}
         {locationData.city}
@@ -200,7 +205,9 @@ function App() {
         <button
           type="submit"
           className={
-            hidden ? "app-button text-3xl p-6 rounded-full" : "app-button"
+            hidden
+              ? "app-button w-fit text-2xl md:text-3xl p-6 rounded-full"
+              : "app-button"
           }
         >
           {hidden ? "Get the current location" : "Search location"}
@@ -208,7 +215,8 @@ function App() {
       </form>
       {hidden && (
         <img
-          src="../src/assets/earth-terre.gif"
+          // src="https://media.tenor.com/2DS9Eu99SH0AAAAC/earth-terre.gif"
+          src={GlobeGif}
           alt="rotating globe"
           className="inline mt-30 -translate-x-[10%]"
         />
@@ -224,20 +232,20 @@ function App() {
           </div>
 
           <div className="grid grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Temperature</h2>
               <p>{convertTemp(temp)}&deg;C</p>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Feels like</h2>
               <p>{convertTemp(feelslike)}&deg;C</p>
             </div>
             {/* <div className="md:text-black/70">{icon}</div> */}
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Visibility</h2>
               <p>{visibility} km</p>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <div>
                 <h2 className="text-blue-400">Sunrise</h2>
                 <p>{sunrise}</p>
@@ -247,32 +255,32 @@ function App() {
                 {sunset}
               </div>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Cloud cover</h2>
               <p>{cloudcover}%</p>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Conditions</h2>
               <p>{conditions}</p>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Dew</h2>
               <p>{convertTemp(dew)}&deg;C</p>
             </div>
 
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Humidity</h2>
               <p>{humidity}%</p>
             </div>
 
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Pressure</h2>
               <p>
                 {pressure} kg/cm<sup>2</sup>
               </p>
             </div>
 
-            <div>
+            <div className="flex flex-col justify-center">
               <div>
                 <h2 className="text-blue-400">Snow</h2>
                 <p>{snow}</p>
@@ -283,11 +291,11 @@ function App() {
               </div>
             </div>
 
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Solar energy</h2>
               <p>{solarenergy}</p>
             </div>
-            <div>
+            <div className="flex flex-col justify-center">
               <h2 className="text-blue-400">Solar radiation</h2>
               <p>{solarradiation}</p>
             </div>
@@ -300,7 +308,7 @@ function App() {
               weather forecast for 4 days
             </p>
           </div>
-          <div className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
+          <ul className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
             {days.map(
               (
                 { datetime, description, feelslike, temp, humidity, pressure },
@@ -308,7 +316,7 @@ function App() {
               ) => {
                 // console.log(index);
                 return (
-                  <div key={datetime} className="flex flex-col h-64 gap-6">
+                  <li key={datetime} className="flex flex-col h-64 gap-6">
                     <button
                       className="app-button flex gap-4 items-center justify-center"
                       onClick={handleDropdownToggle}
@@ -348,11 +356,11 @@ function App() {
                         </h3>
                       </div>
                     </div>
-                  </div>
+                  </li>
                 );
               },
             )}
-          </div>
+          </ul>
         </div>
       </div>
     </section>

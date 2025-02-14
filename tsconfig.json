@@ -63,7 +63,8 @@
     "outDir": "../../build/lib",
     "typeRoots": [],
     "types": [
-      "vite/client"
+      "vite/client",
+      "node"
       //  "vite-plugin-svgr/client"
     ]
   },

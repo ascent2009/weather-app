@@ -63,4 +63,7 @@ code {
   &:active {
     transform: translateY(2%);
   }
+  @media screen and (min-width: 768px) {
+    width: 100%;
+  }
 }
