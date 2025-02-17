@@ -186,14 +186,18 @@ function App() {
   } = data;
 
   return (
-    <section className="md:text-center bg-[url('./assets/weather.jpg')] w-screen md:w-screen h-screen md:h-dvw bg-cover md:bg-no-repeat">
+    <section className="md:text-center bg-[url('./assets/weather.jpg')] w-screen h-screen md:h-fit bg-cover md:bg-auto md:bg-no-repeat pb-[20px]">
       {/* <p className="text-2xl text-white">
         {locationData.country}
         {locationData.city}
       </p> */}
       <form
         onSubmit={handleSubmit}
-        className={hidden ? "app-form justify-center" : "app-form"}
+        className={
+          hidden
+            ? "app-form md:justify-center"
+            : "app-form flex-col w-[80%] md:flex-row md:w-fit"
+        }
       >
         <input
           className={hidden ? "hidden" : "app-input"}
@@ -222,30 +226,30 @@ function App() {
         />
       )}
       <div className={hidden ? "hidden" : "block"}>
-        <div className="my-16 m-auto text-white w-[70%]">
-          <div className="my-8 text-2xl font-bold flex gap-10 justify-center">
+        <div className="my-16 m-auto text-white w-[80%] md:w-[70%]">
+          <div className="my-8 text-2xl font-bold text-center md:flex gap-10 justify-center">
             <p>{location}</p>
             <p>{datetime}</p>
           </div>
-          <div className="text-1xl font-bold">
+          <div className="text-1xl font-bold text-center">
             <p>{description}</p>
           </div>
 
-          <div className="grid grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
-            <div className="flex flex-col justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-8 font-bold mt-[3rem]">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Temperature</h2>
               <p>{convertTemp(temp)}&deg;C</p>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Feels like</h2>
               <p>{convertTemp(feelslike)}&deg;C</p>
             </div>
             {/* <div className="md:text-black/70">{icon}</div> */}
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Visibility</h2>
               <p>{visibility} km</p>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <div>
                 <h2 className="text-blue-400">Sunrise</h2>
                 <p>{sunrise}</p>
@@ -255,32 +259,32 @@ function App() {
                 {sunset}
               </div>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Cloud cover</h2>
               <p>{cloudcover}%</p>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Conditions</h2>
               <p>{conditions}</p>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Dew</h2>
               <p>{convertTemp(dew)}&deg;C</p>
             </div>
 
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Humidity</h2>
               <p>{humidity}%</p>
             </div>
 
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Pressure</h2>
               <p>
                 {pressure} kg/cm<sup>2</sup>
               </p>
             </div>
 
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <div>
                 <h2 className="text-blue-400">Snow</h2>
                 <p>{snow}</p>
@@ -291,16 +295,16 @@ function App() {
               </div>
             </div>
 
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Solar energy</h2>
               <p>{solarenergy}</p>
             </div>
-            <div className="flex flex-col justify-center">
+            <div className="flex flex-col items-center justify-center md:justify-center">
               <h2 className="text-blue-400">Solar radiation</h2>
               <p>{solarradiation}</p>
             </div>
           </div>
-          <div className="text-2xl font-bold my-12">
+          <div className="text-2xl font-bold my-12 text-center">
             <p>
               <span className="text-blue-400">
                 {address.substring(0, 1).toUpperCase() + address.substring(1)}
@@ -308,7 +312,7 @@ function App() {
               weather forecast for 4 days
             </p>
           </div>
-          <ul className="grid grid-cols-4 gap-x-8 font-bold mt-[2rem]">
+          <ul className="grid md:grid-cols-4 gap-y-4 md:gap-x-8 font-bold mt-[2rem]">
             {days.map(
               (
                 { datetime, description, feelslike, temp, humidity, pressure },
@@ -316,7 +320,7 @@ function App() {
               ) => {
                 // console.log(index);
                 return (
-                  <li key={datetime} className="flex flex-col h-64 gap-6">
+                  <li key={datetime} className="flex flex-col md:h-64 gap-6">
                     <button
                       className="app-button flex gap-4 items-center justify-center"
                       onClick={handleDropdownToggle}
@@ -335,7 +339,7 @@ function App() {
                         dropdown ? "flex flex-col h-72 gap-6" : "hidden"
                       }
                     >
-                      <h3 className="text-left h-16">{description}</h3>
+                      <h3 className="text-left md:h-16">{description}</h3>
                       <div className="flex gap-4 ">
                         <h2 className="text-blue-400">Temperature</h2>
                         <h3>{convertTemp(temp)}&deg;C</h3>
