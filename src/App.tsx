@@ -3,31 +3,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
 import { convertTemp } from "./helpers/utils";
-import DropdownSvg from "./assets/chevron-down.svg";
+// import DropdownSvg from "./assets/chevron-down.svg";
 import GlobeGif from "./assets/earth-terre.gif";
 // const GlobeGif = require("./assets/earth-terre.gif");
-
-interface IData {
-  address: string;
-  location: string;
-  cloudcover?: number | undefined;
-  conditions?: string | undefined;
-  datetime?: string | undefined;
-  dew: number;
-  feelslike: number;
-  humidity?: number | undefined;
-  pressure?: number | undefined;
-  snow?: number | undefined;
-  snowdepth?: number | undefined;
-  solarenergy?: number | undefined;
-  solarradiation?: number | undefined;
-  sunrise: string;
-  sunset: string;
-  temp: number;
-  visibility?: number | undefined;
-  description: string;
-  days: [];
-}
+import Dropdown from "./components/Dropdown";
+import { IData } from "./types";
 
 function App() {
   const [locationData, setLocationData] = useState({ country: "", city: "" });
@@ -53,7 +33,7 @@ function App() {
     days: [],
   });
 
-  const [dropdown, setDropdown] = useState(false);
+  // const [dropdown, setDropdown] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [hidden, setHidden] = useState(true);
 
@@ -155,13 +135,14 @@ function App() {
     console.log(data);
   };
 
-  const handleDropdownToggle = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
-    const id = e.currentTarget.id;
-    console.log(id);
-    setDropdown(!dropdown);
-  };
+  // const handleDropdownToggle = (
+  //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  //   idx: string,
+  // ) => {
+  //   const id = e.currentTarget.id;
+  //   console.log(id, idx);
+  //   if (id === idx) setDropdown(!dropdown);
+  // };
 
   const {
     address,
@@ -185,8 +166,10 @@ function App() {
     days,
   } = data;
 
+  console.log(location.split(",")[0]);
+
   return (
-    <section className="md:text-center bg-[url('./assets/weather.jpg')] w-screen h-screen md:h-fit bg-cover md:bg-auto md:bg-no-repeat pb-[20px]">
+    <section className="md:text-center">
       {/* <p className="text-2xl text-white">
         {locationData.country}
         {locationData.city}
@@ -222,7 +205,7 @@ function App() {
           // src="https://media.tenor.com/2DS9Eu99SH0AAAAC/earth-terre.gif"
           src={GlobeGif}
           alt="rotating globe"
-          className="inline mt-30 -translate-x-[10%]"
+          className="inline mt-30 -translate-x-[10%] mb-[70%] md:mb-auto"
         />
       )}
       <div className={hidden ? "hidden" : "block"}>
@@ -307,12 +290,13 @@ function App() {
           <div className="text-2xl font-bold my-12 text-center">
             <p>
               <span className="text-blue-400">
-                {address.substring(0, 1).toUpperCase() + address.substring(1)}
+                {/* {address.substring(0, 1).toUpperCase() + address.substring(1)} */}
+                {location.split(",")[0]}
               </span>{" "}
               weather forecast for 4 days
             </p>
           </div>
-          <ul className="grid md:grid-cols-4 gap-y-4 md:gap-x-8 font-bold mt-[2rem]">
+          {/* <ul className="grid md:grid-cols-4 gap-y-4 md:gap-x-8 font-bold mt-[2rem]">
             {days.map(
               (
                 { datetime, description, feelslike, temp, humidity, pressure },
@@ -322,8 +306,10 @@ function App() {
                 return (
                   <li key={datetime} className="flex flex-col md:h-64 gap-6">
                     <button
-                      className="app-button flex gap-4 items-center justify-center"
-                      onClick={handleDropdownToggle}
+                      className="app-button flex gap-4 items-center justify-center opacity-75 hover:opacity-100"
+                      onClick={(e) =>
+                        handleDropdownToggle(e, (index + 1).toString())
+                      }
                       id={(index + 1).toString()}
                     >
                       <h3>{new Date(datetime).toLocaleDateString()}</h3>
@@ -364,7 +350,8 @@ function App() {
                 );
               },
             )}
-          </ul>
+          </ul> */}
+          <Dropdown days={days} />
         </div>
       </div>
     </section>

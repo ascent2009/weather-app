@@ -7,6 +7,10 @@ body {
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url("./assets/weather.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* height: 100vh; */
 }
 
 code {
@@ -66,4 +70,8 @@ code {
   @media screen and (min-width: 768px) {
     width: 100%;
   }
+}
+
+@utility app-active {
+  display: flex;
 }
