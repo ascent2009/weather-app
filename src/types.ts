@@ -1,5 +1,4 @@
 export interface IData {
-  address: string;
   location: string;
   cloudcover?: number | undefined;
   conditions?: string | undefined;
